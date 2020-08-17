@@ -9,29 +9,13 @@ import {
   Alert,
   SafeAreaView,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 import AppButton from "../components/AppButton";
 import Screen from "../components/Screen";
 
-const registerClicked = () => {
-  Alert.alert(
-    "Alert Title",
-    "My Alert Msg",
-    [
-      {
-        text: "Cancel",
-        onPress: () => console.log("Cancel Pressed"),
-        style: "cancel",
-      },
-      { text: "OK", onPress: () => console.log("OK Pressed") },
-    ],
-    { cancelable: false }
-  );
-};
-
-export default function WelcomeScreen(props) {
+export default function WelcomeScreen({ navigation }) {
   return (
-
     <ImageBackground
       blurRadius={3}
       style={styles.background}
@@ -39,18 +23,20 @@ export default function WelcomeScreen(props) {
     >
       <SafeAreaView style={styles.logoContainer}>
         <Image style={styles.logo} source={require("../assets/logo-red.png")} />
-        <Text style={styles.tagline}> Sell What you don't need</Text>
+        <Text style={styles.tagline}> Sell What you don 't need</Text>
       </SafeAreaView>
       <View style={styles.buttonsContainer}>
-        <AppButton title="login" onPress={() => console.log("Login Clicked")} />
+        <AppButton
+          title="login"
+          onPress={() => navigation.navigate("LoginScreen")}
+        />
         <AppButton
           color="secondary"
           title="register"
-          onPress={registerClicked}
+          onPress={() => navigation.navigate("RegisterScreen")}
         />
       </View>
     </ImageBackground>
-
   );
 }
 

@@ -5,8 +5,8 @@ import colors from "../config/colors";
 import Constants from "expo-constants";
 import ListItem from "./../components/ListItem";
 import Icon from "../components/Icon";
-
 import ListItemSeparator from "./../components/ListItemSeparator";
+import Screen from "./../components/Screen";
 
 const menuItems = [
   {
@@ -22,11 +22,12 @@ const menuItems = [
       name: "email",
       backgroundColor: colors.secondary,
     },
+    targetScreen: "Messages",
   },
 ];
-export default function AccountScreen() {
+export default function AccountScreen({ navigation }) {
   return (
-    <SafeAreaView style={styles.screen}>
+    <Screen>
       <View style={styles.container}>
         <ListItem
           title="Mosh Hamedani"
@@ -42,6 +43,7 @@ export default function AccountScreen() {
           renderItem={({ item }) => (
             <ListItem
               title={item.title}
+              onPress={() => navigation.navigate(item.targetScreen)}
               ImageComponent={
                 <Icon
                   name={item.icon.name}
@@ -56,7 +58,7 @@ export default function AccountScreen() {
         title="Log Out"
         ImageComponent={<Icon name="logout" backgroundColor="#ffe66d" />}
       />
-    </SafeAreaView>
+    </Screen>
   );
 }
 
