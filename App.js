@@ -1,79 +1,58 @@
-import * as React from "react";
+import React, { useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { AppLoading } from "expo";
 
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
-
-import navigationTheme from "./app/navigation/navigationTheme";
 import AppNavigator from "./app/navigation/AppNavigator";
-
-// const Link = () => {
-//   const navigation = useNavigation();
-//   return (
-//     <Button
-//       title="View Tweet"
-//       onPress={() => navigation.navigate("TweetDetails", { id: 1 })}
-//     />
-//   );
-// };
-
-// const Tweets = () => (
-//   <Screen>
-//     <Text>Tweets</Text>
-//     <Link />
-//   </Screen>
-// );
-
-// const TweetDetails = ({ route }) => (
-//   //useRoute()
-//   <Screen>
-//     <Text>Tweet Details {route.params.id}</Text>
-//   </Screen>
-// );
-
-// const Stack = createStackNavigator();
-
-// const FeedNavigator = () => (
-//   <Stack.Navigator>
-//     <Stack.Screen name="Tweets" component={Tweets} />
-//     <Stack.Screen
-//       name="TweetDetails"
-//       component={TweetDetails}
-//       options={({ route }) => ({ title: `Tweet Details ${route.params.id}` })}
-//     />
-//   </Stack.Navigator>
-// );
-// const Account = () => (
-//   <Screen>
-//     <Text>Account</Text>
-//   </Screen>
-// );
-
-// const Tab = createBottomTabNavigator();
-// const TabNavigator = () => (
-//   <Tab.Navigator
-//     tabBarOptions={{
-//       activeBackgroundColor: "tomato",
-//       activeTintColor: "white",
-//       inactiveBackgroundColor: "#eee",
-//       inactiveTintColor: "black",
-//     }}
-//   >
-//     <Tab.Screen
-//       name="Feed"
-//       component={FeedNavigator}
-//       options={{
-//         tabBarIcon: ({ size, color }) => (
-//           <MaterialCommunityIcons name="home" size={size} color={color} />
-//         ),
-//       }}
-//     />
-//     <Tab.Screen name="Account" component={Account} />
-//   </Tab.Navigator>
-// );
+import AuthContext from "./app/auth/context";
+import AuthNavigator from "./app/navigation/AuthNavigator";
+import authStorage from "./app/auth/storage";
+import navigationTheme from "./app/navigation/navigationTheme";
+import OfflineNotice from "./app/components/OfflineNotice";
 
 export default function App() {
+  const [user, setUser] = useState();
+  const [isReady, setIsReady] = useState(false);
+
+  const restoreUser = async () => {
+    const user = await authStorage.getUser();
+    if (user) setUser(user);
+  };
+
+  if (!isReady)
+    return (
+      <AppLoading startAsync={restoreUser} onFinish={() => setIsReady(true)} />
+    );
+
   return (
-    <NavigationContainer theme={navigationTheme}>
-      <AppNavigator />
-    </NavigationContainer>
+    <AuthContext.Provider value={{ user, setUser }}>
+      <OfflineNotice />
+      <NavigationContainer theme={navigationTheme}>
+        {user ? <AppNavigator /> : <AuthNavigator />}
+      </NavigationContainer>
+    </AuthContext.Provider>
+
+    // <NavigationContainer>
+    //   <AuthNavigator />
+    // </NavigationContainer>
   );
+
+  // NetInfo.addEventListener((netInfo) => console.log(netInfo))
+  // const demo = async () => {
+  //   try {
+  //     await AsyncStorage.setItem("person", JSON.stringify({ id: 1 }));
+  //     const value = await AsyncStorage.getItem("person");
+  //     const person = JSON.parse(value);
+  //     console.log(person);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+  // demo();
+  // const debugTry = async () => {
+  //   cache.store("person", { id: 1 });
+  //   const data = await cache.get("person");
+  //   console.log(data);
+  // };
+  // debugTry();
+  // return null;
 }

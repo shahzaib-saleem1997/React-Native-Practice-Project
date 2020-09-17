@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, SafeAreaView, FlatList } from "react-native";
+import { StyleSheet, View, FlatList } from "react-native";
 
 import colors from "../config/colors";
 import Constants from "expo-constants";
@@ -7,6 +7,9 @@ import ListItem from "./../components/ListItem";
 import Icon from "../components/Icon";
 import ListItemSeparator from "./../components/ListItemSeparator";
 import Screen from "./../components/Screen";
+
+import authStorage from "../auth/storage";
+import useAuth from "./../auth/useAuth";
 
 const menuItems = [
   {
@@ -26,12 +29,14 @@ const menuItems = [
   },
 ];
 export default function AccountScreen({ navigation }) {
+  const { user, logOut } = useAuth();
+
   return (
     <Screen>
       <View style={styles.container}>
         <ListItem
-          title="Mosh Hamedani"
-          subTitle="programmingwithmosh@gmai.com"
+          title={user.name}
+          subTitle={user.email}
           image={require("../assets/mosh.jpg")}
         />
       </View>
@@ -57,6 +62,7 @@ export default function AccountScreen({ navigation }) {
       <ListItem
         title="Log Out"
         ImageComponent={<Icon name="logout" backgroundColor="#ffe66d" />}
+        onPress={() => logOut()}
       />
     </Screen>
   );
